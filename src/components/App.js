@@ -27,17 +27,22 @@ class App extends React.Component {
             },
          }
       );
-      console.log(response.data);
-      if (response.data[0].hwi.hasOwnProperty('prs')) {
-         console.log(response.data[0].hwi.prs[0].sound.audio);
+      if (!response.data[0].hasOwnProperty('meta')) {
+         this.setState({
+            words: '',
+         });
+      } else {
+         // if (response.data[0].hwi.hasOwnProperty('prs')) {
+         //    console.log(response.data[0].hwi.prs[0].sound.audio);
+         // }
+         this.setState({
+            words: response.data,
+            sword: term,
+            audio: response.data[0].hwi.hasOwnProperty('prs')
+               ? response.data[0].hwi.prs[0].sound.audio
+               : '',
+         });
       }
-      this.setState({
-         words: response.data,
-         sword: term,
-         audio: response.data[0].hwi.hasOwnProperty('prs')
-            ? response.data[0].hwi.prs[0].sound.audio
-            : '',
-      });
    };
 
    playAudio = () => {
@@ -63,10 +68,9 @@ class App extends React.Component {
       }
    };
 
-   render() {
+   renderDef = () => {
       return (
-         <div className="ui container">
-            <SearchBar onFormSubmit={this.onTermSubmit}></SearchBar>
+         <div>
             <i className="volume up icon" onClick={this.playAudio}></i>
             {this.state.audio !== '' ? (
                <audio
@@ -80,6 +84,19 @@ class App extends React.Component {
             <div className="five wide column">
                <WordList words={this.state.words} sword={this.state.sword} />
             </div>
+         </div>
+      );
+   };
+
+   render() {
+      return (
+         <div className="ui container">
+            <SearchBar onFormSubmit={this.onTermSubmit}></SearchBar>
+            {this.state.words.length > 0 ? (
+               this.renderDef()
+            ) : (
+               <img src="https://66.media.tumblr.com/20d9f53297a8984a7455d6f5bc336c58/e05115941f982421-ff/s500x750/72493d1229f97a31dddb0fb58a391724cb3e2609.gif"></img>
+            )}
          </div>
       );
    }
