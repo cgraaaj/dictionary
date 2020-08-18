@@ -13,7 +13,7 @@ class App extends React.Component {
    };
 
    componentDidMount() {
-      this.onTermSubmit('awesome');
+      this.onTermSubmit('Raj Lincoln');
    }
 
    onTermSubmit = async (term) => {
