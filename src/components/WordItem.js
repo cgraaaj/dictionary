@@ -12,6 +12,7 @@ const WordItem = ({ word }) => {
    return (
       <div className="card">
          <div className="content">
+         <div className="header">{word.meta.id}</div>
             <div className="meta">{word.fl}</div>
             <div className="description">
                <div className="ui bulleted list">{renderShortDef}</div>

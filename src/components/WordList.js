@@ -1,9 +1,12 @@
 import React from 'react';
 import WordItem from './WordItem';
 
-const WordList = ({ words }) => {
+const WordList = ({ words, sword }) => {
    const renderedList = words.map((word) => {
+      if(word.meta.id.includes(sword)) {
       return <WordItem key={word.meta.uuid} word={word} />;
+      }
+      return null
    });
    return (
       <div>
