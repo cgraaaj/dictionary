@@ -18,11 +18,16 @@ const Audio = ({ audio, sword }) => {
     }
   };
 
+  console.log(audio.includes("theaw"));
   return audio !== "" ? (
     <div className="ui eight column grid">
       <audio
         id="audio-element"
-        src={`https://media.merriam-webster.com/audio/prons/en/us/mp3/${getAudio()}/${audio}.mp3`}
+        src={
+          audio.includes("theaw")
+            ? `/resource/tneaw.mp3`
+            : `https://media.merriam-webster.com/audio/prons/en/us/mp3/${getAudio()}/${audio}.mp3`
+        }
       ></audio>
       <div className="column">
         <i className="volume up icon" onClick={playAudio}></i>
