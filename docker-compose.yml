@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  react:
+    container_name: lincolnsDictionary
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3005:3005
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    environment:
+      - TZ=Asia/Kolkata
+      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped
+    networks:
+      - react_stack_nw
+    stdin_open: true
+
+networks:
+  react_stack_nw: # Exposed by your host.
+    # external: true
+    name: Tradingstack_default
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.30.05.0/24
+          # - gateway: 10.77.60.1
