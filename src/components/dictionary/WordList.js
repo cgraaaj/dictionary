@@ -10,7 +10,6 @@ const WordList = ({ words, sword }) => {
   });
   return (
     <div>
-      {/* <div className="ui relaxed divided list">{renderedList}</div> */}
       <div className="ui cards ui">{renderedList}</div>
     </div>
   );

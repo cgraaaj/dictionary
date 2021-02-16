@@ -18,13 +18,12 @@ const Audio = ({ audio, sword }) => {
     }
   };
 
-  console.log(audio.includes("theaw"));
   return audio !== "" ? (
     <div className="ui eight column grid">
       <audio
         id="audio-element"
         src={
-          audio.includes("theaw")
+          audio.includes("tneaw")
             ? `/resource/tneaw.mp3`
             : `https://media.merriam-webster.com/audio/prons/en/us/mp3/${getAudio()}/${audio}.mp3`
         }
