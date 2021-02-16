@@ -20,7 +20,7 @@ class GAuth extends React.Component {
 
   onAuthChange = (isSignedIn) => {
     if (isSignedIn) {
-      this.props.signIn();
+      this.props.signIn(this.auth.currentUser.get().getBasicProfile());
     } else {
       this.props.signOut();
     }
@@ -47,7 +47,7 @@ class GAuth extends React.Component {
     } else if (this.props.isSignedIn) {
       return (
         <button className="ui basic button" onClick={this.onClickSignOut}>
-          <i className="google icon"></i>
+          <img className="ui avatar image" src={this.props.userProp.imageURL} />
           Logout
         </button>
       );
@@ -68,7 +68,7 @@ class GAuth extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { isSignedIn: state.gAuth.isSignedIn };
+  return { isSignedIn: state.gAuth.isSignedIn, userProp: state.gAuth };
 };
 
 export default connect(mapStateToProps, { signIn, signOut })(GAuth);

@@ -1,3 +1,5 @@
+import { SEARCH_TERM } from "../actions/types";
+
 const INTIAL_STATE = {
   sterm: "Dota",
 };

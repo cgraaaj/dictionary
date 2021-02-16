@@ -1,3 +1,5 @@
+import { FETCH_DATA } from "../actions/types";
+
 const INTIAL_STATE = {
   words: [],
   sword: "",
@@ -6,7 +8,7 @@ const INTIAL_STATE = {
 
 export default (state = INTIAL_STATE, action) => {
   switch (action.type) {
-    case "FETCH_DATA":
+    case FETCH_DATA:
       const payload = action.payload;
       if (!payload.data[0].hasOwnProperty("meta")) {
         return { ...state, words: "", sword: action.term, audio: "tneaw" };
