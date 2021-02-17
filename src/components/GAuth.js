@@ -1,6 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { signIn, signOut } from "../actions";
+
+import { signIn, signOut, fetchBooks } from "../actions";
+
 class GAuth extends React.Component {
   componentDidMount() {
     window.gapi.load("client:auth2", () => {
@@ -8,7 +10,7 @@ class GAuth extends React.Component {
         .init({
           clientId:
             "562645785873-7oh3bo5jlesebqa34hfi00mluhid7hnb.apps.googleusercontent.com",
-          scope: "email",
+          scope: "email https://www.googleapis.com/auth/books",
         })
         .then(() => {
           this.auth = window.gapi.auth2.getAuthInstance();
@@ -20,7 +22,8 @@ class GAuth extends React.Component {
 
   onAuthChange = (isSignedIn) => {
     if (isSignedIn) {
-      this.props.signIn(this.auth.currentUser.get().getBasicProfile());
+      this.props.signIn(this.auth.currentUser.get());
+      this.props.fetchBooks(3, this.props.token.access_token);
     } else {
       this.props.signOut();
     }
@@ -47,7 +50,11 @@ class GAuth extends React.Component {
     } else if (this.props.isSignedIn) {
       return (
         <button className="ui basic button" onClick={this.onClickSignOut}>
-          <img className="ui avatar image" src={this.props.userProp.imageURL} />
+          <img
+            className="ui avatar image"
+            src={this.props.userProp.imageURL}
+            alt="image_url"
+          />
           Logout
         </button>
       );
@@ -62,13 +69,16 @@ class GAuth extends React.Component {
   }
 
   render() {
-    // console.log(this.props);
     return <div>{this.renderAuth()}</div>;
   }
 }
 
 const mapStateToProps = (state) => {
-  return { isSignedIn: state.gAuth.isSignedIn, userProp: state.gAuth };
+  return {
+    isSignedIn: state.gAuth.isSignedIn,
+    userProp: state.gAuth,
+    token: state.gAuth.authRespose,
+  };
 };
 
-export default connect(mapStateToProps, { signIn, signOut })(GAuth);
+export default connect(mapStateToProps, { signIn, signOut, fetchBooks })(GAuth);

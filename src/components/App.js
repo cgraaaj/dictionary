@@ -7,7 +7,7 @@ import BookShow from "./books/BookShow";
 import BookList from "./books/BookList";
 
 import SearchBar from "./dictionary/SearchBar";
-import Header from "./dictionary/Header";
+import Header from "./Header";
 import GAuth from "./GAuth";
 
 // https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fucker01.mp3,

@@ -1,7 +1,13 @@
-import _ from "lodash";
+// import _ from "lodash";
 
-import dict from "../apis/dict";
-import { SIGN_IN, SIGN_OUT, SEARCH_TERM, FETCH_DATA } from "./types";
+import { dict, book } from "../apis/dict";
+import {
+  SIGN_IN,
+  SIGN_OUT,
+  SEARCH_TERM,
+  FETCH_DATA,
+  FETCH_BOOKS,
+} from "./types";
 
 export const fetchData = (term) => async (dispatch) => {
   const response = await dict.get(
@@ -10,6 +16,22 @@ export const fetchData = (term) => async (dispatch) => {
   dispatch({
     type: FETCH_DATA,
     payload: { term, data: response.data },
+  });
+};
+
+export const fetchBooks = (bookShelfID, accesstoken) => async (dispatch) => {
+  const response = await book.get(
+    `/mylibrary/bookshelves/${bookShelfID}/volumes`,
+    {
+      headers: {
+        Authorization: `Bearer ${accesstoken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  dispatch({
+    type: FETCH_BOOKS,
+    payload: { data: response.data },
   });
 };
 
@@ -31,14 +53,16 @@ export const searchTerm = (term) => {
   };
 };
 
-export const signIn = (profile) => {
+export const signIn = (currentUser) => {
   return {
     type: SIGN_IN,
     payload: {
-      uid: profile.getId(),
-      uname: profile.getName(),
-      email: profile.getEmail(),
-      imageURL: profile.getImageUrl(),
+      uid: currentUser.getBasicProfile().getId(),
+      uname: currentUser.getBasicProfile().getName(),
+      email: currentUser.getBasicProfile().getEmail(),
+      imageURL: currentUser.getBasicProfile().getImageUrl(),
+      authRespose: currentUser.getAuthResponse(),
+      currentUser,
     },
   };
 };

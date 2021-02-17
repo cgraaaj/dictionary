@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 import { SIGN_IN, SIGN_OUT } from "../actions/types";
 
 const INTIAL_STATE = {
@@ -8,6 +6,8 @@ const INTIAL_STATE = {
   uname: null,
   email: null,
   imageURL: null,
+  authRespose: null,
+  currentUser: null,
 };
 
 export default (state = INTIAL_STATE, action) => {
