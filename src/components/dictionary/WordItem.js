@@ -1,25 +1,50 @@
-import React from 'react';
+import React from "react";
+import { connect } from "react-redux";
 
-const WordItem = ({ word }) => {
-   const renderShortDef = word.shortdef.map((shortdef, i) => {
-      return (
-         <div className="item" key={i}>
-            {shortdef}
-         </div>
-      );
-   });
+import { setDefinition } from "../../actions/index";
 
-   return (
-      <div className="card">
-         <div className="content">
-         <div className="header">{word.meta.id}</div>
-            <div className="meta">{word.fl}</div>
-            <div className="description">
-               <div className="ui bulleted list">{renderShortDef}</div>
-            </div>
-         </div>
+class WordItem extends React.Component {
+  renderShortDef = this.props.word.shortdef.map((shortdef, i) => {
+    return (
+      <div className="item" key={i}>
+        {shortdef}
       </div>
-   );
+    );
+  });
+
+  onClickWordCard = () => {
+    var word = {
+      search_word: this.props.sword,
+      definitions: this.props.word.shortdef,
+    };
+    this.props.setDefinition(this.props.book, word,this.props.user.uid);
+  };
+
+  render() {
+    return (
+      <div className="card">
+        <div className="content" onClick={this.onClickWordCard}>
+          <div className="header">{this.props.word.meta.id}</div>
+          <div className="meta">{this.props.word.fl}</div>
+          <div className="description">
+            <div className="ui bulleted list">{this.renderShortDef}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    book: state.books.selectedBook,
+    sword: state.data.sword,
+    user: {
+      uid: state.gAuth.uid,
+      name: state.gAuth.name,
+      email: state.gAuth.email,
+    },
+  };
 };
 
-export default WordItem;
+export default connect(mapStateToProps, { setDefinition })(WordItem);

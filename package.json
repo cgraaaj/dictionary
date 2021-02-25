@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/lodash": "^4.14.168",
     "axios": "^0.21.1",
+    "jmespath": "^0.15.0",
+    "jsonpath": "^1.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.2.2",

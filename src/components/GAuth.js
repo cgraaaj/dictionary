@@ -23,7 +23,11 @@ class GAuth extends React.Component {
   onAuthChange = (isSignedIn) => {
     if (isSignedIn) {
       this.props.signIn(this.auth.currentUser.get());
-      this.props.fetchBooks(3, this.props.token.access_token);
+      this.props.fetchBooks(
+        3,
+        this.props.token.access_token,
+        this.props.userProp
+      );
     } else {
       this.props.signOut();
     }

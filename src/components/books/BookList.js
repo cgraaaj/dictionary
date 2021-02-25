@@ -2,27 +2,23 @@ import React from "react";
 import { connect } from "react-redux";
 import _, { get } from "lodash";
 
-import { fetchBooks } from "../../actions/index";
+import { fetchBooks, selectBook } from "../../actions/index";
 class BookList extends React.Component {
-  // componentDidMount() {
-  //   this.getBooks();
-  // }
-
-  // getBooks() {
-  //   return this.props.isSignedIn ? (
-  //     this.props.fetchBooks(3, this.props.token.access_token)
-  //   ) : (
-  //     <h3>LOGIN TO VIEW BOOKS</h3>
-  //   );
-  // }
-
   renderList() {
     return this.props.books.items.map((item) => {
       return (
         <div className="item" key={item.id}>
           <div className="content">
             <div className="description">
-              <div className="ui grid">
+              <div
+                className="ui grid"
+                onClick={() => {
+                  console.log(`${item.volumeInfo.title} has been selected`);
+                  const id = item.volumeInfo.industryIdentifiers[1].identifier;
+                  const name = item.volumeInfo.title;
+                  this.props.selectBook(id, name);
+                }}
+              >
                 <div className="four wide column">
                   <img
                     className="ui avatar image"
@@ -60,7 +56,9 @@ const mapsStateToProps = (state) => {
   return {
     isSignedIn: state.gAuth.isSignedIn,
     token: state.gAuth.authRespose,
-    books: state.books,
+    books: state.books.books,
+    selectedBook: state.books.selectBook,
+    isDefinitionSet: state.books.isDefinitionSet,
   };
 };
-export default connect(mapsStateToProps, { fetchBooks })(BookList);
+export default connect(mapsStateToProps, { fetchBooks, selectBook })(BookList);
