@@ -6,7 +6,7 @@ export const _putUser = async (user, gResponse) => {
   var resp = "No new books to add";
   var localBooks = user.books;
   localBooks =
-    localBooks.length == 1
+    localBooks.length === 1
       ? localBooks.filter((obj) => Object.keys(obj).length)
       : localBooks;
   const googleBooks = gResponse.data.items;
@@ -22,10 +22,10 @@ export const _putUser = async (user, gResponse) => {
         });
       }
     });
-    resp = await wordTrackerAPI.put(`/users/${user.id}`, {
-      ...user,
-      books: localBooks,
-    });
+      resp = await wordTrackerAPI.put(`/users/${user.id}`, {
+        ...user,
+        books: localBooks,
+      });
     return resp;
   }
 

@@ -1,7 +1,6 @@
 // import _ from "lodash";
 
 import { dictAPI, GbookAPI, wordTrackerAPI } from "../apis/dict";
-import jmesPath from "jmespath";
 import jp from "jsonpath";
 import _ from "lodash";
 import {
@@ -47,10 +46,10 @@ export const fetchBooks = (bookShelfID, accesstoken, userProp) => async (
   try {
     const trackResponse = await wordTrackerAPI.get("/users");
     const user = trackResponse.data.filter((user) => user.id === userProp.uid);
-    const response =
-      user.length > 0
-        ? await _putUser(user.shift(), gResponse)
-        : await _postUser(userProp);
+    // const response =
+    user.length > 0
+      ? await _putUser(user.shift(), gResponse)
+      : await _postUser(userProp);
     // console.log(response);
   } catch (e) {
     console.log(e);

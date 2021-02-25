@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import _, { get } from "lodash";
+import _ from "lodash";
 
 import { fetchBooks, selectBook } from "../../actions/index";
 class BookList extends React.Component {
