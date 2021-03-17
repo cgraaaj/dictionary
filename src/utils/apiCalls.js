@@ -16,16 +16,17 @@ export const _putUser = async (user, gResponse) => {
     googleBooks.forEach((book) => {
       if (!lcbooks.includes(book.volumeInfo.title)) {
         localBooks.push({
+          id: book.volumeInfo.id,
           isbn_13: book.volumeInfo.industryIdentifiers[1].identifier,
           name: book.volumeInfo.title,
           words: [],
         });
       }
     });
-      resp = await wordTrackerAPI.put(`/users/${user.id}`, {
-        ...user,
-        books: localBooks,
-      });
+    resp = await wordTrackerAPI.put(`/users/${user.id}`, {
+      ...user,
+      books: localBooks,
+    });
     return resp;
   }
 

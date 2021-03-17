@@ -32,11 +32,7 @@ class SearchBar extends React.Component {
             />
           </form>
         </div>
-        <Result
-          words={this.props.data.words}
-          audio={this.props.data.audio}
-          sword={this.props.data.sword}
-        />
+        <Result words={this.props.data.words} sword={this.props.data.sword} />
       </div>
     );
   }

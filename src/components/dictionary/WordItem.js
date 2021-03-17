@@ -14,10 +14,14 @@ class WordItem extends React.Component {
 
   onClickWordCard = () => {
     var word = {
+      date_time: new Date()
+        .toLocaleString("en-GB", { hour12: false })
+        .replace(/ /g, ""),
       search_word: this.props.sword,
+      audioURL: this.props.audioURL,
       definitions: this.props.word.shortdef,
     };
-    this.props.setDefinition(this.props.book, word,this.props.user.uid);
+    this.props.setDefinition(this.props.book, word, this.props.user.uid);
   };
 
   render() {
@@ -39,6 +43,7 @@ const mapStateToProps = (state) => {
   return {
     book: state.books.selectedBook,
     sword: state.data.sword,
+    audioURL: state.words.audioURL,
     user: {
       uid: state.gAuth.uid,
       name: state.gAuth.name,

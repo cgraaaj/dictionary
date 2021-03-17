@@ -5,6 +5,7 @@ import dataReducer from "./dataReducer";
 import gAuthReducer from "./gAuthReducer";
 import termReducer from "./termReducer";
 import bookReducer from "./bookReducer";
+import wordReducer from "./wordReducer";
 
 export default combineReducers({
   form: fromReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   gAuth: gAuthReducer,
   term: termReducer,
   books: bookReducer,
+  words: wordReducer,
 });

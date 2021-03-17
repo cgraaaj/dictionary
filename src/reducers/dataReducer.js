@@ -1,4 +1,5 @@
 import { FETCH_DATA } from "../actions/types";
+import { getAudioURL } from "../utils/getAudioURL";
 
 const INTIAL_STATE = {
   words: [],
@@ -11,17 +12,18 @@ export default (state = INTIAL_STATE, action) => {
     case FETCH_DATA:
       const payload = action.payload;
       if (!payload.data[0].hasOwnProperty("meta")) {
-        return { ...state, words: "", sword: action.term, audio: "tneaw" };
+        return {
+          ...state,
+          words: "",
+          sword: action.term,
+          audio: "/resource/tneaw.mp3",
+        };
       }
       return {
         ...state,
         words: payload.data,
         sword: payload.term,
-        audio: payload.data[0].hwi.hasOwnProperty("prs")
-          ? payload.data[0].hwi.prs[0].hasOwnProperty("sound")
-            ? payload.data[0].hwi.prs[0].sound.audio
-            : ""
-          : "",
+        audio: getAudioURL(payload.data[0]),
       };
 
     default:
