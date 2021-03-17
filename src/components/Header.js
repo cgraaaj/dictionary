@@ -12,6 +12,12 @@ class Header extends React.Component {
         <Link to="/" className="item">
           Dictionary
         </Link>
+        <Link to="/add_book" className="item">
+          Add Book
+        </Link>
+        <Link to="/word_tracker" className="item">
+          Word Tracker
+        </Link>
 
         <div className="right menu">
           <GAuth />

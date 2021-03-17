@@ -1,14 +1,8 @@
-import {
-  FETCH_BOOKS,
-  SIGN_OUT,
-  SELECT_BOOK,
-  SET_DEFINITION,
-} from "../actions/types";
+import { FETCH_BOOKS, SIGN_OUT, SELECT_BOOK } from "../actions/types";
 
 const INTIAL_STATE = {
   books: {},
   selectedBook: null,
-  isDefinitionSet: false,
 };
 
 export default (state = INTIAL_STATE, action) => {
@@ -19,8 +13,6 @@ export default (state = INTIAL_STATE, action) => {
       return INTIAL_STATE;
     case SELECT_BOOK:
       return { ...state, selectedBook: action.payload };
-    case SET_DEFINITION:
-      return { ...state, isDefinitionSet: action.payload };
     default:
       return state;
   }
