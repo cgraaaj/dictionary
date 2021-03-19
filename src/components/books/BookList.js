@@ -22,12 +22,27 @@ class BookList extends React.Component {
                 <div className="four wide column">
                   <img
                     className="ui avatar image"
-                    src={item.volumeInfo.imageLinks.smallThumbnail}
+                    src={
+                      item.volumeInfo.hasOwnProperty("imageLinks")
+                        ? item.volumeInfo.imageLinks.smallThumbnail
+                        : null
+                    }
                     alt={item.volumeInfo.title}
                   />
                 </div>
                 <div className="six wide column">
-                  <h2>{item.volumeInfo.title}</h2>
+                  <h2>
+                    <a
+                      style={{ display: "table-cell" }}
+                      href={item.volumeInfo.infoLink}
+                      target="_blank"
+                    >
+                      {item.volumeInfo.title}
+                    </a>
+                  </h2>
+                </div>
+                <div className="four wide column">
+                  <h3>{item.volumeInfo.authors[0]}</h3>
                 </div>
               </div>
 
