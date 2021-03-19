@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { setAudioURL } from "../../actions/index";
-
 class Audio extends React.Component {
   playAudio() {
     const audioEl = document.getElementById("audio-element");
@@ -26,4 +24,4 @@ const mapsStateToProps = (state) => {
   return { audio: state.data.audio, search_word: state.data.sword };
 };
 
-export default connect(mapsStateToProps, { setAudioURL })(Audio);
+export default connect(mapsStateToProps, {})(Audio);

@@ -1,5 +1,9 @@
 import React from "react";
 import { reduxForm, Field } from "redux-form";
+import { connect } from "react-redux";
+import { addBook } from "../../actions";
+
+import { toast } from "react-toastify";
 
 class BookCreate extends React.Component {
   renderError({ error, touched }) {
@@ -21,9 +25,11 @@ class BookCreate extends React.Component {
     );
   };
 
-  onSubmit(formValues) {
-    console.log(formValues);
-  }
+  onSubmit = (formValues) => {
+    this.props.addBook(formValues, this.props.authResp.access_token);
+    console.log(this.props.notify);
+    toast(this.props.notify);
+  };
 
   render() {
     return (
@@ -55,7 +61,13 @@ const validate = (formValues) => {
   return errors;
 };
 
-export default reduxForm({
+const formWrapped = reduxForm({
   form: "bookCreate",
   validate,
 })(BookCreate);
+
+const mapStateToProps = (state) => {
+  return { authResp: state.gAuth.authResponse, notify: state.notify.message };
+};
+
+export default connect(mapStateToProps, { addBook })(formWrapped);

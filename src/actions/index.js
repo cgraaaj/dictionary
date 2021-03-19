@@ -11,7 +11,7 @@ import {
   FETCH_BOOKS,
   SELECT_BOOK,
   SET_DEFINITION,
-  SET_AUIDOURL,
+  NOTIFY,
 } from "./types";
 import { _postUser, _putUser } from "../utils/apiCalls";
 
@@ -24,7 +24,7 @@ export const searchTerm = (term) => {
 
 export const fetchData = (term) => async (dispatch) => {
   const response = await dictAPI.get(
-    `/collegiate/json/${term}?key=ee2768a1-8b8e-4617-a361-9072d8efc137`
+    `/collegiate/json/${term}?key=${process.env.REACT_APP_MERRIAM_WEBSTER_API_KEY}`
   );
   dispatch({
     type: FETCH_DATA,
@@ -69,15 +69,6 @@ export const selectBook = (id, name) => {
     payload: {
       id,
       name,
-    },
-  };
-};
-
-export const setAudioURL = (audioURL) => {
-  return {
-    type: SET_AUIDOURL,
-    payload: {
-      data: audioURL,
     },
   };
 };
@@ -178,7 +169,7 @@ export const signIn = (currentUser) => {
       name: currentUser.getBasicProfile().getName(),
       email: currentUser.getBasicProfile().getEmail(),
       imageURL: currentUser.getBasicProfile().getImageUrl(),
-      authRespose: currentUser.getAuthResponse(),
+      authResponse: currentUser.getAuthResponse(),
       currentUser,
     },
   };
@@ -188,4 +179,41 @@ export const signOut = () => {
   return {
     type: SIGN_OUT,
   };
+};
+
+export const addBook = ({ isbn, shelf }, access_token) => async (dispatch) => {
+  let res;
+  const response = await GbookAPI.get("/volumes", {
+    params: { q: `isbn:${isbn}` },
+  });
+  if (response.data.totalItems > 0) {
+    let volumeId = response.data.items[0].id;
+    const addResp = await GbookAPI.post(
+      `/mylibrary/bookshelves/${shelf}/addVolume`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json",
+        },
+        params: { volumeId: volumeId },
+      }
+    );
+    res = {
+      type: NOTIFY,
+      payload: {
+        message: `Book ${response.data.items[0].volumeInfo.title} has been added...`,
+        response,
+      },
+    };
+  } else {
+    res = {
+      type: NOTIFY,
+      payload: {
+        message: "No book found",
+        response,
+      },
+    };
+  }
+  dispatch(res);
 };

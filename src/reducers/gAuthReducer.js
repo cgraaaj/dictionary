@@ -6,13 +6,14 @@ const INTIAL_STATE = {
   uname: null,
   email: null,
   imageURL: null,
-  authRespose: null,
+  authResponse: null,
   currentUser: null,
 };
 
 export default (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case SIGN_IN:
+      // console.log(action.payload);
       return { ...state, isSignedIn: true, ...action.payload };
     case SIGN_OUT:
       return {

@@ -20,6 +20,11 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div className="ui container">
+        <h2>
+          {this.props.selectedBook
+            ? this.props.selectedBook.name
+            : "No Book Selected"}
+        </h2>
         <div className="search-bar ui segment">
           <form className="search-bar ui form" onSubmit={this.onFormSubmit}>
             <div className="field"></div>
@@ -38,6 +43,8 @@ class SearchBar extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => state;
+const mapStateToProps = (state) => {
+  return { ...state, selectedBook: state.books.selectedBook };
+};
 
 export default connect(mapStateToProps, { fetchData, searchTerm })(SearchBar);

@@ -81,7 +81,7 @@ const mapStateToProps = (state) => {
   return {
     isSignedIn: state.gAuth.isSignedIn,
     userProp: state.gAuth,
-    token: state.gAuth.authRespose,
+    token: state.gAuth.authResponse,
   };
 };
 

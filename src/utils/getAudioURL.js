@@ -1,5 +1,4 @@
 export const getAudioURL = (audioData) => {
-  console.log(audioData);
   let audio = audioData.hwi.hasOwnProperty("prs")
     ? audioData.hwi.prs[0].hasOwnProperty("sound")
       ? audioData.hwi.prs[0].sound.audio

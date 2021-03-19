@@ -43,7 +43,7 @@ const mapStateToProps = (state) => {
   return {
     book: state.books.selectedBook,
     sword: state.data.sword,
-    audioURL: state.words.audioURL,
+    audioURL: state.data.audio,
     user: {
       uid: state.gAuth.uid,
       name: state.gAuth.name,
