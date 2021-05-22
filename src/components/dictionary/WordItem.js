@@ -12,22 +12,19 @@ class WordItem extends React.Component {
     );
   });
 
-  onClickWordCard = () => {
-    var word = {
-      date_time: new Date()
-        .toLocaleString("en-GB", { hour12: false })
-        .replace(/ /g, ""),
-      search_word: this.props.sword,
-      audioURL: this.props.audioURL,
+  onClickWord = () => {
+    var wordData = {
+      search_word: this.props.sword.toLowerCase(),
+      audio_url: this.props.audioURL,
       definitions: this.props.word.shortdef,
     };
-    this.props.setDefinition(this.props.book, word, this.props.user.uid);
+    this.props.setDefinition(wordData);
   };
 
   render() {
     return (
       <div className="card">
-        <div className="content" onClick={this.onClickWordCard}>
+        <div className="content" onClick={this.onClickWord}>
           <div className="header">{this.props.word.meta.id}</div>
           <div className="meta">{this.props.word.fl}</div>
           <div className="description">
@@ -41,14 +38,8 @@ class WordItem extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    book: state.books.selectedBook,
     sword: state.data.sword,
     audioURL: state.data.audio,
-    user: {
-      uid: state.gAuth.uid,
-      name: state.gAuth.name,
-      email: state.gAuth.email,
-    },
   };
 };
 

@@ -2,7 +2,9 @@
 
 import { dictAPI, GbookAPI, wordTrackerAPI } from "../apis/dict";
 import jp from "jsonpath";
-import _ from "lodash";
+import _, { extendWith } from "lodash";
+
+import history from "../history";
 import {
   SIGN_IN,
   SIGN_OUT,
@@ -13,14 +15,7 @@ import {
   SET_DEFINITION,
   NOTIFY,
 } from "./types";
-import { _postUser, _putUser } from "../utils/apiCalls";
-
-export const searchTerm = (term) => {
-  return {
-    type: SEARCH_TERM,
-    payload: term,
-  };
-};
+import { getUser, createUser , getBooks, createWord} from "../utils/apiCalls";
 
 export const fetchData = (term) => async (dispatch) => {
   const response = await dictAPI.get(
@@ -32,55 +27,84 @@ export const fetchData = (term) => async (dispatch) => {
   });
 };
 
-export const fetchBooks = (bookShelfID, accesstoken, userProp) => async (
-  dispatch
-) => {
-  const gResponse = await GbookAPI.get(
+export const searchTerm = (term) => {
+  return {
+    type: SEARCH_TERM,
+    payload: term,
+  };
+};
+
+export const signIn =  (currentUser) => async (dispatch, getState) => {
+// check if user available
+let user = await getUser(currentUser)
+if(user === null){
+user  = await createUser(currentUser)
+}
+dispatch({
+    type: SIGN_IN,
+    payload: {
+      userId: currentUser.getBasicProfile().getId(),
+      name: currentUser.getBasicProfile().getName(),
+      email: currentUser.getBasicProfile().getEmail(),
+      imageURL: currentUser.getBasicProfile().getImageUrl(),
+      authResponse: currentUser.getAuthResponse(),
+      currentUser,
+      user
+    },
+  })
+};
+
+export const signOut = () => {
+  return {
+    type: SIGN_OUT,
+  };
+};
+
+export const fetchBooks = (bookShelfID) => async (dispatch, getState) => {
+  console.log(getState());
+  const { access_token } = getState().gAuth.authResponse;
+  const user = getState().gAuth.user;
+  const gbookResponse = await GbookAPI.get(
     `/mylibrary/bookshelves/${bookShelfID}/volumes`,
     {
       headers: {
-        Authorization: `Bearer ${accesstoken}`,
+        Authorization: `Bearer ${access_token}`,
         "Content-Type": "application/json",
       },
     }
   );
-  try {
-    const trackResponse = await wordTrackerAPI.get("/users");
-    const user = trackResponse.data.filter((user) => user.id === userProp.uid);
-    // const response =
-    // console.log(gResponse);
-    user.length > 0
-      ? await _putUser(user.shift(), gResponse)
-      : await _postUser(userProp);
-    // console.log(response);
-  } catch (e) {
-    console.log(e);
-  }
+  let userBooks = await getBooks (user, gbookResponse);
+  // console.log(response);
+  console.log(userBooks);
 
-  dispatch({
-    type: FETCH_BOOKS,
-    payload: { data: gResponse.data },
-  });
+  dispatch(
+    {
+      type: FETCH_BOOKS,
+      payload: userBooks,
+    }
+  );
 };
 
-export const selectBook = (id, name) => {
+export const selectBook = (_id, isbn_13, title) => {
   return {
     type: SELECT_BOOK,
     payload: {
-      id,
-      name,
+      _id,
+      isbn_13,
+      title,
     },
   };
 };
 
-export const setDefinition = (book, word, userId) => async (dispatch) => {
+export const setDefinition = (wordData) => async (dispatch, getState) => {
+  const user = getState().gAuth.user;
+  console.log(user._id);
+  const book = getState().books.selectedBook;
+  console.log(book._id);
   let response = {};
-  let put = false;
-  const user = await wordTrackerAPI.get(`/users/${userId}`);
-  var data = user.data;
   // general words
-  if (book === null) {
-    console.log(book, word, userId);
+  if (_.isEmpty(book)) {
+    // console.log(book, word, userId);
     // var localWords = jp.query(data, `$.generalWords[*]`);
 
     // await wordTrackerAPI.put(`/users/${userId}`, {
@@ -90,57 +114,8 @@ export const setDefinition = (book, word, userId) => async (dispatch) => {
   }
   //for books
   else {
-    var localWords = jp.query(
-      data,
-      `$.books[?(@.isbn_13 == '${book.id}')].words[*]`
-    );
-    //check if its the first word
-    if (_.isEqual(localWords, [])) {
-      put = !put;
-      localWords.push(word);
-    }
-    // more than one word present already
-    else {
-      var updated = false;
-      //update already seached word with new definition
-      localWords = localWords.map((w) => {
-        if (w.search_word === word.search_word) {
-          updated = !updated;
-          let tempw = w;
-          delete tempw.date_time;
-          let tempword = word;
-          delete tempword.date_time;
-          if (!(JSON.stringify(tempw) === JSON.stringify(tempword))) {
-            put = !put;
-            return word;
-          } else {
-            return w;
-          }
-        } else {
-          return w;
-        }
-      });
-      //add the word to list
-      if (!updated) {
-        put = !put;
-        localWords.push(word);
-      }
-    }
-    //update new word in selected book
-    // filter the selected book
-    var localBook = jp.query(data, `$.books[?(@.isbn_13 == '${book.id}')]`)[0];
-    localBook.words = localWords;
-    const updatedBooks = data.books.map((book) =>
-      book.isbn_13 === book.id ? localBook : book
-    );
-    if (put) {
-      response = await wordTrackerAPI.put(`/users/${userId}`, {
-        ...data,
-        books: updatedBooks,
-      });
-    } else {
-      response = "nothing to update";
-    }
+    response = await createWord(user._id,book._id,wordData);
+    console.log(response);
   }
   dispatch({
     type: SET_DEFINITION,
@@ -161,59 +136,45 @@ export const setDefinition = (book, word, userId) => async (dispatch) => {
 //   });
 // });
 
-export const signIn = (currentUser) => {
-  return {
-    type: SIGN_IN,
-    payload: {
-      uid: currentUser.getBasicProfile().getId(),
-      name: currentUser.getBasicProfile().getName(),
-      email: currentUser.getBasicProfile().getEmail(),
-      imageURL: currentUser.getBasicProfile().getImageUrl(),
-      authResponse: currentUser.getAuthResponse(),
-      currentUser,
-    },
-  };
-};
-
-export const signOut = () => {
-  return {
-    type: SIGN_OUT,
-  };
-};
-
-export const addBook = ({ isbn, shelf }, access_token) => async (dispatch) => {
-  let res;
-  const response = await GbookAPI.get("/volumes", {
-    params: { q: `isbn:${isbn}` },
-  });
-  if (response.data.totalItems > 0) {
-    let volumeId = response.data.items[0].id;
-    const addResp = await GbookAPI.post(
-      `/mylibrary/bookshelves/${shelf}/addVolume`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-          "Content-Type": "application/json",
+export const addBook =
+  ({ isbn, shelf }) =>
+  async (dispatch, getState) => {
+    let res;
+    const response = await GbookAPI.get("/volumes", {
+      params: { q: `isbn:${isbn}` },
+    });
+    if (response.data.totalItems > 0) {
+      let volumeId = response.data.items[0].id;
+      const addResp = await GbookAPI.post(
+        `/mylibrary/bookshelves/${shelf}/addVolume`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${
+              getState().gAuth.authResponse.access_token
+            }`,
+            "Content-Type": "application/json",
+          },
+          params: { volumeId: volumeId },
+        }
+      );
+      res = {
+        type: NOTIFY,
+        payload: {
+          message: `Book ${response.data.items[0].volumeInfo.title} has been added...`,
+          response,
         },
-        params: { volumeId: volumeId },
-      }
-    );
-    res = {
-      type: NOTIFY,
-      payload: {
-        message: `Book ${response.data.items[0].volumeInfo.title} has been added...`,
-        response,
-      },
-    };
-  } else {
-    res = {
-      type: NOTIFY,
-      payload: {
-        message: "No book found",
-        response,
-      },
-    };
-  }
-  dispatch(res);
-};
+      };
+    } else {
+      res = {
+        type: NOTIFY,
+        payload: {
+          message: "No book found",
+          response,
+        },
+      };
+    }
+    dispatch(res);
+    // navigate to list books
+    history.push("/books");
+  };

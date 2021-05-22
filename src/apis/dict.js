@@ -10,5 +10,5 @@ export const GbookAPI = axios.create({
 });
 
 export const wordTrackerAPI = axios.create({
-  baseURL: "http://192.168.1.67:3005",
+  baseURL: "http://192.168.1.67:5000/graphql",
 });

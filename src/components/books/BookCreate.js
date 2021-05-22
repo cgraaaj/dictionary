@@ -26,7 +26,7 @@ class BookCreate extends React.Component {
   };
 
   onSubmit = (formValues) => {
-    this.props.addBook(formValues, this.props.authResp.access_token);
+    this.props.addBook(formValues);
     console.log(this.props.notify);
     toast(this.props.notify);
   };
@@ -67,7 +67,7 @@ const formWrapped = reduxForm({
 })(BookCreate);
 
 const mapStateToProps = (state) => {
-  return { authResp: state.gAuth.authResponse, notify: state.notify.message };
+  return { notify: state.notify.message };
 };
 
 export default connect(mapStateToProps, { addBook })(formWrapped);
