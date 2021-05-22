@@ -10,5 +10,5 @@ export const GbookAPI = axios.create({
 });
 
 export const wordTrackerAPI = axios.create({
-  baseURL: "https://connectcgr.duckdns.org/wordTrackerAPI",
+  baseURL: `${process.env.REACT_APP_WORD_TRACKER_API}`,
 });

@@ -1,13 +1,14 @@
 import { SIGN_IN, SIGN_OUT } from "../actions/types";
 
 const INTIAL_STATE = {
-  isSignedIn: null,
-  uid: null,
-  uname: null,
+  isSignedIn: false,
+  userId: null,
+  name: null,
   email: null,
   imageURL: null,
   authResponse: null,
   currentUser: null,
+  user:{}
 };
 
 export default (state = INTIAL_STATE, action) => {

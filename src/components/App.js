@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { Router, Route } from "react-router-dom";
 import BookCreate from "./books/BookCreate";
 import BookEdit from "./books/BookEdit";
 import BookDelete from "./books/BookDelete";
@@ -9,13 +9,14 @@ import WordList from "./wordTracker/WordList";
 
 import SearchBar from "./dictionary/SearchBar";
 import Header from "./Header";
+import history from "../history";
 
 // https://media.merriam-webster.com/audio/prons/en/us/mp3/f/fucker01.mp3,
 
 const App = () => {
   return (
     <div className="ui container">
-      <BrowserRouter>
+      <Router history={history}>
         <div>
           <Header />
           <Route path="/" exact component={SearchBar}></Route>
@@ -23,7 +24,7 @@ const App = () => {
           <Route path="/add_book" component={BookCreate}></Route>
           <Route path="/word_tracker" component={WordList}></Route>
         </div>
-      </BrowserRouter>
+      </Router>
     </div>
   );
 };

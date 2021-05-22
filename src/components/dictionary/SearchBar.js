@@ -22,7 +22,7 @@ class SearchBar extends React.Component {
       <div className="ui container">
         <h2>
           {this.props.selectedBook
-            ? this.props.selectedBook.name
+            ? this.props.selectedBook.title
             : "No Book Selected"}
         </h2>
         <div className="search-bar ui segment">

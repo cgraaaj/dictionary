@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { signIn, signOut, fetchBooks } from "../actions";
+import { signIn, signOut } from "../actions";
 
 class GAuth extends React.Component {
   componentDidMount() {
@@ -23,11 +23,6 @@ class GAuth extends React.Component {
   onAuthChange = (isSignedIn) => {
     if (isSignedIn) {
       this.props.signIn(this.auth.currentUser.get());
-      this.props.fetchBooks(
-        3,
-        this.props.token.access_token,
-        this.props.userProp
-      );
     } else {
       this.props.signOut();
     }
@@ -81,8 +76,7 @@ const mapStateToProps = (state) => {
   return {
     isSignedIn: state.gAuth.isSignedIn,
     userProp: state.gAuth,
-    token: state.gAuth.authResponse,
   };
 };
 
-export default connect(mapStateToProps, { signIn, signOut, fetchBooks })(GAuth);
+export default connect(mapStateToProps, { signIn, signOut })(GAuth);
