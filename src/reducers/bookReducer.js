@@ -6,7 +6,7 @@ const INTIAL_STATE = {
   selectedBook: {},
 };
 
-export default (state = INTIAL_STATE, action) => {
+const bookReducer = (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case FETCH_BOOKS:
       return { ...state, books: _.mapKeys(action.payload,'isbn_13') };
@@ -18,3 +18,5 @@ export default (state = INTIAL_STATE, action) => {
       return state;
   }
 };
+
+export default bookReducer

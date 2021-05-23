@@ -7,7 +7,7 @@ const INTIAL_STATE = {
   audio: "",
 };
 
-export default (state = INTIAL_STATE, action) => {
+const dataReducer = (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case FETCH_DATA:
       const payload = action.payload;
@@ -30,3 +30,5 @@ export default (state = INTIAL_STATE, action) => {
       return state;
   }
 };
+
+export default dataReducer

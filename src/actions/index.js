@@ -1,8 +1,7 @@
 // import _ from "lodash";
 
-import { dictAPI, GbookAPI, wordTrackerAPI } from "../apis/dict";
-import jp from "jsonpath";
-import _, { extendWith } from "lodash";
+import { dictAPI, GbookAPI } from "../apis/dict";
+import _ from "lodash";
 
 import history from "../history";
 import {
@@ -13,9 +12,10 @@ import {
   FETCH_BOOKS,
   SELECT_BOOK,
   SET_DEFINITION,
+  FETCH_WORDS,
   NOTIFY,
 } from "./types";
-import { getUser, createUser , getBooks, createWord} from "../utils/apiCalls";
+import { getUser, createUser , getBooks, createWord, getWords} from "../utils/apiCalls";
 
 export const fetchData = (term) => async (dispatch) => {
   const response = await dictAPI.get(
@@ -40,6 +40,7 @@ let user = await getUser(currentUser)
 if(user === null){
 user  = await createUser(currentUser)
 }
+let words = await getWords(user._id)
 dispatch({
     type: SIGN_IN,
     payload: {
@@ -49,15 +50,21 @@ dispatch({
       imageURL: currentUser.getBasicProfile().getImageUrl(),
       authResponse: currentUser.getAuthResponse(),
       currentUser,
-      user
+      user,
+      words: words.payload
     },
   })
 };
 
-export const signOut = () => {
-  return {
+export const signOut = () => async (dispatch) => {
+  let words = await getWords()
+  console.log(words)
+  dispatch( {
     type: SIGN_OUT,
-  };
+    payload:{
+      words: words.payload
+    }
+  });
 };
 
 export const fetchBooks = (bookShelfID) => async (dispatch, getState) => {
@@ -96,25 +103,42 @@ export const selectBook = (_id, isbn_13, title) => {
   };
 };
 
+export const fetchWords = () => async (dispatch, getState) =>{
+  const user = getState().gAuth.user;
+  console.log(user._id);
+  const book = getState().books.selectedBook;
+  console.log(book._id);
+  let response = {};
+
+  response = await getWords(user._id, book._id)
+
+  dispatch({ 
+    type: FETCH_WORDS,
+    payload: {
+      data: response.payload
+    }
+  })
+}
+
 export const setDefinition = (wordData) => async (dispatch, getState) => {
   const user = getState().gAuth.user;
   console.log(user._id);
   const book = getState().books.selectedBook;
   console.log(book._id);
   let response = {};
+  // anonymous 
+  if(!user._id){
+    response = await createWord(wordData);
+    console.log(response);
+  }
   // general words
-  if (_.isEmpty(book)) {
-    // console.log(book, word, userId);
-    // var localWords = jp.query(data, `$.generalWords[*]`);
-
-    // await wordTrackerAPI.put(`/users/${userId}`, {
-    //   ...data,
-    //   generalWords:updatedWords
-    // });
+  else if (_.isEmpty(book)) {
+    response = await createWord(wordData,user._id);
+    console.log(response);
   }
   //for books
   else {
-    response = await createWord(user._id,book._id,wordData);
+    response = await createWord(wordData,user._id,book._id);
     console.log(response);
   }
   dispatch({

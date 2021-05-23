@@ -41,6 +41,7 @@ class BookList extends React.Component {
                           style={{ display: "table-cell" }}
                           href={book.info}
                           target="_blank"
+                          rel="noreferrer"
                         >
                           {book.title}
                         </a>
@@ -70,7 +71,11 @@ class BookList extends React.Component {
         ) : this.props.isSignedIn ? (
           <h3>LOADING BOOKS</h3>
         ) : (
-          <h3>LOGIN TO VIEW BOOKS</h3>
+          <div className="ui tthree column centered grid">
+            <div className="column">
+              <h3>LOGIN TO VIEW BOOKS</h3>
+            </div>
+          </div>
         )}
       </div>
     );

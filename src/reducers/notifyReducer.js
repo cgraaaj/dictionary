@@ -4,7 +4,7 @@ const INTIAL_STATE = {
   message: null,
 };
 
-export default (state = INTIAL_STATE, action) => {
+const notifyReducer = (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case NOTIFY:
       return { ...state, message: action.payload.message };
@@ -12,3 +12,5 @@ export default (state = INTIAL_STATE, action) => {
       return state;
   }
 };
+
+export default notifyReducer
