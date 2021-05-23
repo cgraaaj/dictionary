@@ -11,7 +11,7 @@ const INTIAL_STATE = {
   user:{}
 };
 
-export default (state = INTIAL_STATE, action) => {
+const gAuthReducer = (state = INTIAL_STATE, action) => {
   switch (action.type) {
     case SIGN_IN:
       // console.log(action.payload);
@@ -25,3 +25,5 @@ export default (state = INTIAL_STATE, action) => {
       return state;
   }
 };
+
+export default gAuthReducer

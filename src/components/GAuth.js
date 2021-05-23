@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { signIn, signOut } from "../actions";
+import { signIn, signOut} from "../actions";
 
 class GAuth extends React.Component {
   componentDidMount() {

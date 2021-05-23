@@ -224,7 +224,11 @@ export const getBooks = async (user, gbookResponse) => {
   return user.books;
 };
 
-export const createWord = async (userId, bookId, wordData) => {
+export const createWord = async (
+  wordData,
+  userId = "60a9583548192e1970144532",
+  bookId = "60a950f3f7ee2a167e5420f5"
+) => {
   // check if the word exits
   let word = await wordTrackerAPI.post(
     "",
@@ -250,13 +254,13 @@ export const createWord = async (userId, bookId, wordData) => {
   if (word !== null) {
     let wordUserIds = word.userIds;
     //check userid in the list
-    let userIndex = 0
+    let userIndex = 0;
     let user = wordUserIds.find((user, index) => {
-      userIndex = index
-      return user.userId === userId
+      userIndex = index;
+      return user.userId === userId;
     });
     let update = false;
-    console.log(user, !user)
+    console.log(user, !user);
     if (!user) {
       // create userId:bookIds pair
       let bookIds = [];
@@ -275,7 +279,7 @@ export const createWord = async (userId, bookId, wordData) => {
       // pair created with updated books
       user = { userId, bookIds };
       // wordUserIds.push(user);
-      wordUserIds.splice(userIndex,1,user);
+      wordUserIds.splice(userIndex, 1, user);
       update = true;
       console.log("new bookId added");
     } else {
@@ -349,4 +353,57 @@ export const createWord = async (userId, bookId, wordData) => {
   console.log(word);
   word = word.data.data.wordCreateOne;
   return { message: "word created", payload: word };
+};
+
+export const getWords = async (userId, bookId) => {
+  let query = ``;
+  let wordsByUsersBook=false
+  if (!userId) {
+    query = `{
+      wordMany{
+        _id
+        search_word
+        audio_url
+        definitions
+      }
+    }`;
+  } else if (userId && bookId===undefined) {
+    query = `{
+      wordMany(filter:{userIds:{userId:"${userId}"}}){
+        _id
+        search_word
+        audio_url
+        definitions
+      }
+    }`;
+  } else {
+    wordsByUsersBook = true;
+    query =`{
+      wordsByUsersBook(userId:"${userId}" bookId:"${bookId}"){
+        _id
+        search_word
+        audio_url
+        definitions
+      }
+    }`
+  }
+  let words = await wordTrackerAPI.post(
+    "",
+    {
+      query,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  console.log(words);
+  if(wordsByUsersBook){
+    words = words.data.data.wordsByUsersBook;  
+  }else{
+    words = words.data.data.wordMany;
+  }
+  
+  return { message: "words fetched", payload: words };
 };
