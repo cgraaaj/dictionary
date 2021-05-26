@@ -10,15 +10,22 @@ class WordItem extends React.Component {
     );
   });
 
-  onClickWord = () => {
- 
-  };
+  onClickWord = () => {};
 
   render() {
     return (
       <div className="card">
         <div className="content" onClick={this.onClickWord}>
-          <div className="header">{this.props.word.search_word}</div>
+          <div className="header">
+            <div className="ui grid">
+              <div className="thirteen wide column">
+                {this.props.word.search_word}
+              </div>
+              <div className="three wide column">
+                <i className="edit outline icon"></i>
+              </div>
+            </div>
+          </div>
           <div className="description">
             <div className="ui bulleted list">{this.renderShortDef}</div>
           </div>
@@ -30,8 +37,8 @@ class WordItem extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    state
+    state,
   };
 };
 
-export default connect(mapStateToProps, { })(WordItem);
+export default connect(mapStateToProps, {})(WordItem);

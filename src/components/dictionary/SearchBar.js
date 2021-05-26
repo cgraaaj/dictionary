@@ -3,10 +3,12 @@ import { connect } from "react-redux";
 
 import { fetchData, searchTerm } from "../../actions/index";
 import Result from "./Result";
+import Modal from "../Modal";
+import { setModal } from "../../actions";
 
 class SearchBar extends React.Component {
   componentDidMount() {
-    this.props.fetchData(this.props.term.sterm);
+    this.props.fetchData(this.props.term);
   }
   onInputChange = (event) => {
     this.props.searchTerm(event.target.value);
@@ -14,7 +16,7 @@ class SearchBar extends React.Component {
 
   onFormSubmit = (event) => {
     event.preventDefault();
-    this.props.fetchData(this.props.term.sterm);
+    this.props.fetchData(this.props.term);
   };
 
   render() {
@@ -32,19 +34,37 @@ class SearchBar extends React.Component {
             <input
               onChange={this.onInputChange}
               type="text"
-              value={this.props.term.sterm}
+              value={this.props.term}
               placeholder="Search..."
             />
           </form>
         </div>
-        <Result words={this.props.data.words} sword={this.props.data.sword} />
+        <Result />
+        {this.props.modal.flag &&
+        (this.props.modal.example || this.props.modal.synonyms) ? (
+          <Modal
+            example={this.props.modal.example}
+            synonyms={this.props.modal.synonyms}
+            onDismiss={() => {
+              this.props.setModal({
+                flag: !this.props.modal.flag,
+                example: "",
+                synonyms: [],
+              });
+            }}
+          />
+        ) : null}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return { ...state, selectedBook: state.books.selectedBook };
+  return {
+    term: state.term.sterm,
+    selectedBook: state.books.selectedBook,
+    modal: state.data.modal,
+  };
 };
 
-export default connect(mapStateToProps, { fetchData, searchTerm })(SearchBar);
+export default connect(mapStateToProps, { fetchData, searchTerm, setModal})(SearchBar);

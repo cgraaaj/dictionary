@@ -1,4 +1,5 @@
 import { wordTrackerAPI } from "../apis/dict";
+import {ANONYMOUS_USER_ID, ANONYMOUS_BOOK_ID} from "../utils/constants"
 
 const getBookIds = async (gbooks) => {
   console.log(gbooks);
@@ -226,8 +227,8 @@ export const getBooks = async (user, gbookResponse) => {
 
 export const createWord = async (
   wordData,
-  userId = "60a9583548192e1970144532",
-  bookId = "60a950f3f7ee2a167e5420f5"
+  userId = ANONYMOUS_USER_ID,
+  bookId = ANONYMOUS_BOOK_ID
 ) => {
   // check if the word exits
   let word = await wordTrackerAPI.post(
@@ -327,11 +328,11 @@ export const createWord = async (
   word = await wordTrackerAPI.post(
     "",
     {
-      query: `mutation wordCreateOne($definitions: [String]!, $wordUserIds: [WordUserIdsInput]){
+      query: `mutation wordCreateOne($definitions: [String]!, $wordUserIds: [WordUserIdsInput], $phonetic: WordPhoneticInput){
         wordCreateOne(record:{
           search_word:"${wordData.search_word}"
           definitions:$definitions
-          audio_url:"${wordData.audio_url}"
+          phonetic:$phonetic
           userIds:$wordUserIds
         }){
           record{
@@ -341,6 +342,7 @@ export const createWord = async (
       }`,
       variables: {
         definitions: wordData.definitions,
+        phonetic: wordData.phonetic,
         wordUserIds,
       },
     },
@@ -363,7 +365,10 @@ export const getWords = async (userId, bookId) => {
       wordMany{
         _id
         search_word
-        audio_url
+        phonetic{
+          text,
+          audio
+        }
         definitions
       }
     }`;
@@ -372,7 +377,10 @@ export const getWords = async (userId, bookId) => {
       wordMany(filter:{userIds:{userId:"${userId}"}}){
         _id
         search_word
-        audio_url
+        phonetic{
+          text,
+          audio
+        }
         definitions
       }
     }`;
@@ -382,7 +390,10 @@ export const getWords = async (userId, bookId) => {
       wordsByUsersBook(userId:"${userId}" bookId:"${bookId}"){
         _id
         search_word
-        audio_url
+        phonetic{
+          text,
+          audio
+        }
         definitions
       }
     }`

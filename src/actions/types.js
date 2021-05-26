@@ -12,3 +12,4 @@ export const SELECT_BOOK = "SELECT_BOOK";
 export const SET_DEFINITION = "SET_DEFINITION";
 
 export const NOTIFY = "NOTIFY";
+export const SET_MODAL = "SET_MODAL";

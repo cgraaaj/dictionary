@@ -1,18 +1,39 @@
 import React from "react";
-import WordItem from "./WordItem";
+import { connect } from "react-redux";
 
-const WordList = ({ words, sword }) => {
-  const renderedList = words.map((word) => {
-    if (word.meta.id.includes(sword.toLowerCase())) {
-      return <WordItem key={word.meta.uuid} word={word} />;
-    }
-    return null;
+import MeaningList from "./MeaningList";
+import Audio from "./Audio";
+
+class WordList extends React.Component {
+  renderedList=(words) => words.map((word, i) => {
+    return (
+      <div className="item" key={i}>
+        <div className="ui large horizontal divided list">
+          <div className="item">
+            <Audio phonetics={word.phonetics}/>
+          </div>
+          <div className="item">
+            <div className="content">
+              <div className="header">{word.word}</div>
+            </div>
+          </div>
+        </div>
+        <MeaningList meanings={word.meanings} word={word.word} phonetic={word.phonetics[0]}/>
+      </div>
+    );
   });
-  return (
-    <div>
-      <div className="ui cards ui">{renderedList}</div>
-    </div>
-  );
+
+  render() {
+    return (
+      <div className="ui relaxed list">
+        <div>{this.renderedList(this.props.words)}</div>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return { words: state.data.words};
 };
 
-export default WordList;
+export default connect(mapStateToProps, { })(WordList);

@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const dictAPI = axios.create({
-  // baseURL: 'https://mashape-community-urban-dictionary.p.rapidapi.com',
-  baseURL: "https://www.dictionaryapi.com/api/v3/references/",
-});
+// export const dictAPI = axios.create({
+//   // baseURL: 'https://mashape-community-urban-dictionary.p.rapidapi.com',
+//   baseURL: "https://www.dictionaryapi.com/api/v3/references/",
+// });
 
 export const GbookAPI = axios.create({
   baseURL: "https://www.googleapis.com/books/v1",
@@ -11,4 +11,8 @@ export const GbookAPI = axios.create({
 
 export const wordTrackerAPI = axios.create({
   baseURL: `${process.env.REACT_APP_WORD_TRACKER_API}`,
+});
+
+export const dictionaryAPI = axios.create({
+  baseURL: `${process.env.REACT_APP_DICTIONARY_API}`,
 });

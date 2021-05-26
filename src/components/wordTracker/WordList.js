@@ -22,7 +22,7 @@ class WordList extends React.Component {
 
 const mapsStateToProps = (state) => {
   return {
-    words: state.words.words,
+    words: Object.values(state.words.words),
   };
 };
 export default connect(mapsStateToProps, { fetchWords })(WordList);

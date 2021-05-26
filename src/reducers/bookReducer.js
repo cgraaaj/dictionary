@@ -11,7 +11,7 @@ const bookReducer = (state = INTIAL_STATE, action) => {
     case FETCH_BOOKS:
       return { ...state, books: _.mapKeys(action.payload,'isbn_13') };
     case SIGN_OUT:
-      return INTIAL_STATE;
+      return {...INTIAL_STATE};
     case SELECT_BOOK:
       return { ...state, selectedBook: action.payload };
     default:
