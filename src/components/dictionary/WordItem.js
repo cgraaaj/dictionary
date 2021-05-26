@@ -1,22 +1,40 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { setDefinition } from "../../actions/index";
+import { setDefinition, setModal } from "../../actions/index";
 
 class WordItem extends React.Component {
-  renderShortDef = this.props.word.shortdef.map((shortdef, i) => {
-    return (
-      <div className="item" key={i}>
-        {shortdef}
-      </div>
-    );
-  });
+  
+  onClickDefinition=(def)=>e =>{
+    const modal = {
+      flag:!this.props.modalFlag,
+      example:def.example,
+      synonyms:def.synonyms
+    }
+     this.props.setModal(modal)
+  }
 
-  onClickWord = () => {
+  renderDefinitions = (definitions) =>
+    definitions.map((def, i) => {
+      return (
+        <div
+          className="item"
+          key={i}
+          onClick={this.onClickDefinition(def)}
+          style={{cursor: "pointer"}}
+        >
+          {def.definition}
+        </div>
+      );
+    });
+
+
+  onDoubleClickCard = () => {
     var wordData = {
-      search_word: this.props.sword.toLowerCase(),
-      audio_url: this.props.audioURL,
-      definitions: this.props.word.shortdef,
+      search_word: this.props.word,
+      phonetic: this.props.phonetic,
+      partOfSpeech: this.props.meaning.partOfSpeech,
+      definitions: this.props.meaning.definitions.map((def) => def.definition),
     };
     this.props.setDefinition(wordData);
   };
@@ -24,11 +42,12 @@ class WordItem extends React.Component {
   render() {
     return (
       <div className="card">
-        <div className="content" onClick={this.onClickWord}>
-          <div className="header">{this.props.word.meta.id}</div>
-          <div className="meta">{this.props.word.fl}</div>
+        <div className="content" onDoubleClick={this.onDoubleClickCard}>
+          <div className="header">{this.props.meaning.partOfSpeech}</div>
           <div className="description">
-            <div className="ui bulleted list">{this.renderShortDef}</div>
+            <div className="ui bulleted list">
+              {this.renderDefinitions(this.props.meaning.definitions)}
+            </div>
           </div>
         </div>
       </div>
@@ -43,4 +62,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { setDefinition })(WordItem);
+export default connect(mapStateToProps, { setDefinition, setModal })(WordItem);

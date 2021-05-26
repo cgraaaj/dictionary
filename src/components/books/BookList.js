@@ -64,19 +64,20 @@ class BookList extends React.Component {
   }
 
   render() {
+    if (this.props.isSignedIn) {
+      console.log(this.props)
+      if (this.props.books.length > 0) {
+        return (
+          <div className="ui relaxed divided list">{this.renderList()}</div>
+        );
+      }
+      return <h3>LOADING BOOKS</h3>;
+    }
     return (
-      <div className="ui relaxed divided list">
-        {this.props.books.length > 0 ? (
-          this.renderList()
-        ) : this.props.isSignedIn ? (
-          <h3>LOADING BOOKS</h3>
-        ) : (
-          <div className="ui tthree column centered grid">
-            <div className="column">
-              <h3>LOGIN TO VIEW BOOKS</h3>
-            </div>
-          </div>
-        )}
+      <div className="ui tthree column centered grid">
+        <div className="column">
+          <h3>LOGIN TO VIEW BOOKS</h3>
+        </div>
       </div>
     );
   }

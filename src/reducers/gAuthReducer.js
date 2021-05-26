@@ -18,8 +18,7 @@ const gAuthReducer = (state = INTIAL_STATE, action) => {
       return { ...state, isSignedIn: true, ...action.payload };
     case SIGN_OUT:
       return {
-        ...INTIAL_STATE,
-        isSignedIn: false,
+        ...INTIAL_STATE
       };
     default:
       return state;

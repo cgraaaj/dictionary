@@ -1,25 +1,51 @@
 import React from "react";
+import { connect } from "react-redux";
 
 import WordList from "./WordList";
 import Audio from "./Audio";
 
-const Result = ({ words, sword }) => {
-  return words.length > 0 ? (
-    <div>
-      <Audio />
-      <div className="five wide column">
-        <WordList words={words} sword={sword} />
+class Result extends React.Component {
+  
+  render() {
+    return this.props.words.length > 0 ? (
+      <div>
+        <div className="five wide column">
+          <WordList/>
+        </div>
       </div>
-    </div>
-  ) : (
-    <div>
-      <Audio />
-      <img
-        src="https://66.media.tumblr.com/20d9f53297a8984a7455d6f5bc336c58/e05115941f982421-ff/s500x750/72493d1229f97a31dddb0fb58a391724cb3e2609.gif"
-        alt="thats not even a word"
-      ></img>
-    </div>
-  );
+    ) : (
+      <div>
+        <div className="ui large horizontal divided list">
+          <div className="item">
+            <Audio phonetics={[]}/>
+          </div>
+          <div className="item">
+            <div className="content">
+              <div className="header">{this.props.words.term}</div>
+            </div>
+          </div>
+        </div>
+        <div className="ui card centered">
+          <div className="image">
+            <img src="/resource/tneaw.gif" alt="thats not even a word"></img>
+          </div>
+          <div className="content">
+            <div className="header">Brah... R U Kidding me</div>
+            <div className="meta">
+              <span className="date">No Definitions Found</span>
+            </div>
+            <div className="description">
+              Let me tell you a secret, better search in Google
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 };
 
-export default Result;
+const mapStateToProps = (state) => {
+  return { words:state.data.words};
+};
+
+export default connect(mapStateToProps, {  })(Result);

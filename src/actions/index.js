@@ -1,6 +1,6 @@
 // import _ from "lodash";
 
-import { dictAPI, GbookAPI } from "../apis/dict";
+import { dictionaryAPI, GbookAPI } from "../apis/dict";
 import _ from "lodash";
 
 import history from "../history";
@@ -14,16 +14,28 @@ import {
   SET_DEFINITION,
   FETCH_WORDS,
   NOTIFY,
+  SET_MODAL,
 } from "./types";
-import { getUser, createUser , getBooks, createWord, getWords} from "../utils/apiCalls";
+import {
+  getUser,
+  createUser,
+  getBooks,
+  createWord,
+  getWords,
+} from "../utils/apiCalls";
 
 export const fetchData = (term) => async (dispatch) => {
-  const response = await dictAPI.get(
-    `/collegiate/json/${term}?key=${process.env.REACT_APP_MERRIAM_WEBSTER_API_KEY}`
-  );
+  const language = "en_US";
+  let response = "";
+  try {
+    response = await dictionaryAPI.get(`/${language}/${term}`);
+    response = response.data;
+  } catch (err) {
+    response = err.response.data;
+  }
   dispatch({
     type: FETCH_DATA,
-    payload: { term, data: response.data },
+    payload: { data: response },
   });
 };
 
@@ -34,14 +46,13 @@ export const searchTerm = (term) => {
   };
 };
 
-export const signIn =  (currentUser) => async (dispatch, getState) => {
-// check if user available
-let user = await getUser(currentUser)
-if(user === null){
-user  = await createUser(currentUser)
-}
-let words = await getWords(user._id)
-dispatch({
+export const signIn = (currentUser) => async (dispatch, getState) => {
+  // check if user available
+  let user = await getUser(currentUser);
+  if (user === null) {
+    user = await createUser(currentUser);
+  }
+  dispatch({
     type: SIGN_IN,
     payload: {
       userId: currentUser.getBasicProfile().getId(),
@@ -51,19 +62,46 @@ dispatch({
       authResponse: currentUser.getAuthResponse(),
       currentUser,
       user,
-      words: words.payload
     },
-  })
+  });
+
+  let words = await getWords(user._id);
+  dispatch({
+    type: FETCH_WORDS,
+    payload: {
+      words: words.payload,
+    },
+  });
+  // check how to reuse the function fetchbooks here
+  const { access_token } = getState().gAuth.authResponse;
+  user = getState().gAuth.user;
+  const gbookResponse = await GbookAPI.get(
+    `/mylibrary/bookshelves/3/volumes`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  let userBooks = await getBooks(user, gbookResponse);
+  dispatch({
+    type: FETCH_BOOKS,
+    payload: userBooks,
+  });
 };
 
 export const signOut = () => async (dispatch) => {
-  let words = await getWords()
-  console.log(words)
-  dispatch( {
+  let words = await getWords();
+  console.log(words);
+  dispatch({
     type: SIGN_OUT,
-    payload:{
-      words: words.payload
-    }
+  });
+  dispatch({
+    type: FETCH_WORDS,
+    payload: {
+      words: words.payload,
+    },
   });
 };
 
@@ -80,16 +118,14 @@ export const fetchBooks = (bookShelfID) => async (dispatch, getState) => {
       },
     }
   );
-  let userBooks = await getBooks (user, gbookResponse);
+  let userBooks = await getBooks(user, gbookResponse);
   // console.log(response);
   console.log(userBooks);
 
-  dispatch(
-    {
-      type: FETCH_BOOKS,
-      payload: userBooks,
-    }
-  );
+  dispatch({
+    type: FETCH_BOOKS,
+    payload: userBooks,
+  });
 };
 
 export const selectBook = (_id, isbn_13, title) => {
@@ -103,22 +139,22 @@ export const selectBook = (_id, isbn_13, title) => {
   };
 };
 
-export const fetchWords = () => async (dispatch, getState) =>{
+export const fetchWords = () => async (dispatch, getState) => {
   const user = getState().gAuth.user;
   console.log(user._id);
   const book = getState().books.selectedBook;
   console.log(book._id);
-  let response = {};
+  let words = {};
 
-  response = await getWords(user._id, book._id)
+  words = await getWords(user._id, book._id);
 
-  dispatch({ 
+  dispatch({
     type: FETCH_WORDS,
     payload: {
-      data: response.payload
-    }
-  })
-}
+      words: words.payload,
+    },
+  });
+};
 
 export const setDefinition = (wordData) => async (dispatch, getState) => {
   const user = getState().gAuth.user;
@@ -126,19 +162,19 @@ export const setDefinition = (wordData) => async (dispatch, getState) => {
   const book = getState().books.selectedBook;
   console.log(book._id);
   let response = {};
-  // anonymous 
-  if(!user._id){
+  // anonymous
+  if (!user._id) {
     response = await createWord(wordData);
     console.log(response);
   }
   // general words
   else if (_.isEmpty(book)) {
-    response = await createWord(wordData,user._id);
+    response = await createWord(wordData, user._id);
     console.log(response);
   }
   //for books
   else {
-    response = await createWord(wordData,user._id,book._id);
+    response = await createWord(wordData, user._id, book._id);
     console.log(response);
   }
   dispatch({
@@ -202,3 +238,10 @@ export const addBook =
     // navigate to list books
     history.push("/books");
   };
+
+export const setModal = (modal) => {
+  return {
+    type: SET_MODAL,
+    payload: modal,
+  };
+};
