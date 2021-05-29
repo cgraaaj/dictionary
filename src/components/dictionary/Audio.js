@@ -20,18 +20,19 @@ class Audio extends React.Component {
     ));
 
   render() {
+    console.log(this.props.card)
     return (
       <div>
         {!_.isEmpty(this.props.phonetics) ? (
           this.renderAudio(this.props.phonetics)
         ) : (
           <div className="ui column grid">
-            <audio id="dobby" src="/resource/dobby.mp3"></audio>
+            <audio id={this.props.card.id} src={this.props.card.audio}></audio>
             <div className="column">
               <i
                 className="volume up icon"
                 onClick={() => {
-                  document.getElementById("dobby").play();
+                  document.getElementById(this.props.card.id).play();
                 }}
               ></i>
             </div>
@@ -42,8 +43,11 @@ class Audio extends React.Component {
   }
 }
 
-const mapsStateToProps = (state) => {
-  return { ...state };
+const mapsStateToProps = (state,ownProps) => {
+  if(ownProps.cardId){
+  return { card:state.data.cards[ownProps.cardId]};
+  }
+  return {...state}
 };
 
 export default connect(mapsStateToProps, {})(Audio);

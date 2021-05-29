@@ -5,19 +5,18 @@ import WordList from "./WordList";
 import Audio from "./Audio";
 
 class Result extends React.Component {
-  
   render() {
     return this.props.words.length > 0 ? (
       <div>
         <div className="five wide column">
-          <WordList/>
+          <WordList />
         </div>
       </div>
     ) : (
       <div>
         <div className="ui large horizontal divided list">
           <div className="item">
-            <Audio phonetics={[]}/>
+            <Audio phonetics={[]} cardId={this.props.cardId}/>
           </div>
           <div className="item">
             <div className="content">
@@ -27,34 +26,28 @@ class Result extends React.Component {
         </div>
         <div className="ui card centered">
           <div className="image">
-            <img src="/resource/dobby.gif" alt="thats not even a word"></img>
+            <img src={this.props.card.gif} alt={this.props.card.alt}></img>
           </div>
-          {/* <div className="content">
-            <div className="header">Brah... R U Kidding me</div>
-            <div className="meta">
-              <span className="date">No Definitions Found</span>
-            </div>
-            <div className="description">
-              Let me tell you a secret, better search in Google
-            </div>
-          </div> */}
           <div className="content">
-            <div className="header">You mustn't be angry with dobby.</div>
-            <div className="meta">
-              <span className="date">Dobby couldn't find the word</span>
-            </div>
-            <div className="description">
-              Dobby hopes that you will find the definition, if you search in Google. Sir.
-            </div>
+            <div className="header">{this.props.card.header}</div>
+            <div className="meta">{this.props.card.meta}</div>
+            <div className="description">{this.props.card.description}</div>
           </div>
         </div>
       </div>
     );
   }
-};
+}
 
 const mapStateToProps = (state) => {
-  return { words:state.data.words};
+  let cardId = Math.floor(
+    Math.random() * (Object.keys(state.data.cards).length - 1 + 1) + 1
+  );
+  return {
+    words: state.data.words,
+    cardId,
+    card: state.data.cards[cardId],
+  };
 };
 
-export default connect(mapStateToProps, {  })(Result);
+export default connect(mapStateToProps, {})(Result);

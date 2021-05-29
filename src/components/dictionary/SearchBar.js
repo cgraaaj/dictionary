@@ -7,13 +7,15 @@ import Modal from "../Modal";
 import { Form, Field } from "react-final-form";
 
 class SearchBar extends React.Component {
+  // check why form word not persist 
   componentDidMount() {
     this.props.fetchData(this.props.term);
   }
 
   onFormSubmit = ({ word }) => {
     this.props.fetchData(word);
-    this.props.searchTerm(word);
+    //using another state to keeptrack of the searched word if page component changes
+    // this.props.searchTerm(word);
   };
 
   renderError({ error, touched }) {
@@ -29,7 +31,7 @@ class SearchBar extends React.Component {
   validate = (formValues) => {
     const errors = {};
     if (!formValues.word) {
-      errors.word = "Dobby would need something to search sir/madam...";
+      errors.word = "Dobby would need something to search, Sir/Madam...";
     }
     return errors;
   };
