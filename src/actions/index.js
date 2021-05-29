@@ -7,12 +7,13 @@ import history from "../history";
 import {
   SIGN_IN,
   SIGN_OUT,
-  SEARCH_TERM,
   FETCH_DATA,
   FETCH_BOOKS,
   SELECT_BOOK,
   SET_DEFINITION,
+  SEARCH_TERM,
   FETCH_WORDS,
+
   NOTIFY,
   SET_MODAL,
 } from "./types";

@@ -1,22 +1,48 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import { fetchData, searchTerm } from "../../actions/index";
+import { fetchData, setModal, searchTerm } from "../../actions";
 import Result from "./Result";
 import Modal from "../Modal";
-import { setModal } from "../../actions";
+import { Form, Field } from "react-final-form";
 
 class SearchBar extends React.Component {
   componentDidMount() {
     this.props.fetchData(this.props.term);
   }
-  onInputChange = (event) => {
-    this.props.searchTerm(event.target.value);
+
+  onFormSubmit = ({ word }) => {
+    this.props.fetchData(word);
+    this.props.searchTerm(word);
   };
 
-  onFormSubmit = (event) => {
-    event.preventDefault();
-    this.props.fetchData(this.props.term);
+  renderError({ error, touched }) {
+    if (touched && error) {
+      return (
+        <div className="header" style={{ color: "#9f3a38" }}>
+          {error}
+        </div>
+      );
+    }
+  }
+
+  validate = (formValues) => {
+    const errors = {};
+    if (!formValues.word) {
+      errors.word = "Dobby would need something to search sir/madam...";
+    }
+    return errors;
+  };
+
+  renderInput = ({ input, label, meta }) => {
+    const className = `field ${meta.error && meta.touched ? "error" : " "}`;
+    return (
+      <div className={className}>
+        <label>{label}</label>
+        <input {...input} autoComplete="off" />
+        {this.renderError(meta)}
+      </div>
+    );
   };
 
   render() {
@@ -27,17 +53,24 @@ class SearchBar extends React.Component {
             ? this.props.selectedBook.title
             : "No Book Selected"}
         </h2>
-        <div className="search-bar ui segment">
-          <form className="search-bar ui form" onSubmit={this.onFormSubmit}>
-            <div className="field"></div>
-            <label>Search</label>
-            <input
-              onChange={this.onInputChange}
-              type="text"
-              value={this.props.term}
-              placeholder="Search..."
-            />
-          </form>
+        <div className="ui segment">
+          <Form
+            onSubmit={this.onFormSubmit}
+            initialValues={this.props.initialValues}
+            validate={this.validate}
+            render={({ handleSubmit }) => (
+              <form
+                className="ui form error"
+                onSubmit={handleSubmit}
+              >
+                <Field
+                  name="word"
+                  component={this.renderInput}
+                  label="Search"
+                />
+              </form>
+            )}
+          />
         </div>
         <Result />
         {this.props.modal.flag &&
@@ -64,7 +97,10 @@ const mapStateToProps = (state) => {
     term: state.term.sterm,
     selectedBook: state.books.selectedBook,
     modal: state.data.modal,
+    initialValues: { word: state.term.sterm },
   };
 };
 
-export default connect(mapStateToProps, { fetchData, searchTerm, setModal})(SearchBar);
+export default connect(mapStateToProps, { fetchData, setModal, searchTerm })(
+  SearchBar
+);

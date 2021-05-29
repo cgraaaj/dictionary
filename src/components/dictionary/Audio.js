@@ -26,12 +26,12 @@ class Audio extends React.Component {
           this.renderAudio(this.props.phonetics)
         ) : (
           <div className="ui column grid">
-            <audio id="tneaw" src="/resource/tneaw.mp3"></audio>
+            <audio id="dobby" src="/resource/dobby.mp3"></audio>
             <div className="column">
               <i
                 className="volume up icon"
                 onClick={() => {
-                  document.getElementById("tneaw").play();
+                  document.getElementById("dobby").play();
                 }}
               ></i>
             </div>
