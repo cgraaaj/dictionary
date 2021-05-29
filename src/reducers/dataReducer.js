@@ -18,7 +18,7 @@ const INTIAL_STATE = {
       alt:"Dobby feels sorry, Sir",
       header:"You mustn't be angry with dobby.",
       meta:"Dobby couldn't find the word",
-      description:"Dobby hopes that you will find the definition, if you search in Google. Sir."
+      description:"Dobby hopes that you will find the definition, If you search in Google. Sir."
     },
     2:{
       id:2,
@@ -28,7 +28,7 @@ const INTIAL_STATE = {
       audio:"/resource/amsorry.mp3",
       header:"Could i be searching anymore words..",
       meta:"\"I am sorry\"",
-      description:"Take my advice, go find google"
+      description:"Check your luck in goooglee"
     },
     3:{
       id:3,
@@ -38,7 +38,7 @@ const INTIAL_STATE = {
       audio:"/resource/tneaw.mp3",
       header:"Who are you kidding.",
       meta:"\"I know..\"other definitions,but not this one...",
-      description:"Take my advice, go find google"
+      description:"Take my advice, Plz go find it in google"
     }
   }
 };
