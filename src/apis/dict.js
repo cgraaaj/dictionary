@@ -9,10 +9,11 @@ export const GbookAPI = axios.create({
   baseURL: "https://www.googleapis.com/books/v1",
 });
 
-export const wordTrackerAPI = axios.create({
-  baseURL: `${process.env.REACT_APP_WORD_TRACKER_API}`,
+export const dictionaryAPI = axios.create({
+  baseURL: '/dictionaryAPI',
 });
 
-export const dictionaryAPI = axios.create({
-  baseURL: `${process.env.REACT_APP_DICTIONARY_API}`,
+export const wordTrackerAPI = axios.create({
+  baseURL: '/wordTrackerAPI'
 });
+
