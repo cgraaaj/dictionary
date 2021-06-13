@@ -1,0 +1,27 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  # - test
+   - build
+
+# test:
+#   stage: test
+#   before_script:
+#     - docker build -t raju6713/docker-learn-react -f Dockerfile.dev .
+#   script:
+#     - echo "Testing App"
+#     - docker run -e CI=true raju6713/docker-learn-react npm run test
+#     - echo "Test successfully!"
+#   tags: 
+#     - ci
+
+build:
+  stage: build
+  script:
+    - apk add --no-cache docker-compose
+    - docker-compose up --build -d
+  tags:
+    - ci

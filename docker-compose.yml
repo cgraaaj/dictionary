@@ -1,7 +1,26 @@
 version: "3.7"
 
 services:
-  client_react:
+  lincolns_dictionary:
+    container_name: lincolnsDictionary
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args: 
+        - REACT_APP_DICTIONARY_API=$REACT_APP_DICTIONARY_API
+        - REACT_APP_WORDTRACKER_API=$REACT_APP_WORDTRACKER_API
+        - NGINX_WORD_TRACKER_API=$NGINX_WORD_TRACKER_API
+        - NGINX_DICTIONARY_API=$NGINX_DICTIONARY_API
+        - NGINX_PORT=$NGINX_PORT
+    ports:
+      - 3006:80
+    environment:
+      - TZ=Asia/Kolkata
+      - CHOKIDAR_USEPOLLING=true
+    restart: unless-stopped
+
+  lincolns_dictionary_dev:
     container_name: lincolnsDictionary_dev
     build:
       context: .

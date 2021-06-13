@@ -9,11 +9,11 @@ server {
   }
 
   location /wordTrackerAPI {
-      proxy_pass ${WORD_TRACKER_API};
+      proxy_pass ${NGINX_WORD_TRACKER_API};
   }
 
   location /dictionaryAPI {
-      proxy_pass ${DICTIONARY_API};
+      proxy_pass ${NGINX_DICTIONARY_API};
   }
   error_page   500 502 503 504  /50x.html;
 
