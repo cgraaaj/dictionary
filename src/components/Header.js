@@ -7,7 +7,7 @@ class Header extends React.Component {
     return (
       <div className="ui secondary  menu">
         <Link to="/books" className="item">
-          BooooBs
+          Books
         </Link>
         <Link to="/" className="item">
           Dictionary
