@@ -5,15 +5,16 @@ import axios from "axios";
 //   baseURL: "https://www.dictionaryapi.com/api/v3/references/",
 // });
 
+const { REACT_APP_DICTIONARY_API, REACT_APP_WORDTRACKER_API } = process.env
+
 export const GbookAPI = axios.create({
   baseURL: "https://www.googleapis.com/books/v1",
 });
 
 export const dictionaryAPI = axios.create({
-  baseURL: '/dictionaryAPI',
+  baseURL: REACT_APP_DICTIONARY_API,
 });
 
 export const wordTrackerAPI = axios.create({
-  baseURL: '/wordTrackerAPI'
+  baseURL: REACT_APP_WORDTRACKER_API
 });
-

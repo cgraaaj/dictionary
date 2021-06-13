@@ -1,18 +1,18 @@
 # pull official base image
-FROM node:10-slim
-# set working directory
-WORKDIR /app
+FROM node:alpine
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+# set working directory
+USER node
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
 
 # install app dependencies
-COPY package.json ./
-RUN npm install react-scripts@3.4.1 -g --silent
-RUN npm install --silent
+COPY --chown=node:node ./package.json ./
+RUN npm install
+COPY --chown=node:node ./ ./
 
-# add app
-COPY . ./
+ENV REACT_APP_DICTIONARY_API=https://api.dictionaryapi.dev/api/v2/entries
+ENV REACT_APP_WORDTRACKER_API=http://192.168.1.76:3005
 
 # start app
 CMD ["npm", "start"]

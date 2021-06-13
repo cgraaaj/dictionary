@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  client_react:
+    container_name: lincolnsDictionary_dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3010:3006
+    environment:
+      - TZ=Asia/Kolkata
+    volumes: 
+      - .:/home/node/app
+      - /home/node/app/node_modules
+    restart: unless-stopped
