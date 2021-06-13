@@ -3,4 +3,3 @@ build
 .dockerignore
 Dockerfile.dev
 Dockerfile.prod
-.env
